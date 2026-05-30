@@ -1,2411 +1,476 @@
-/* =====================================================
-   SNOWCHAT
-   PART 1
-   CORE CHAT SYSTEM
-===================================================== */
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
-console.log("❄️ SnowChat Loaded");
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-/* =====================================================
-   ELEMENTS
-===================================================== */
+<title>SnowChat</title>
 
-const messagesContainer =
-document.getElementById("messages");
+<link rel="stylesheet" href="css/style.css">
 
-const messageInput =
-document.getElementById("messageInput");
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-const sendBtn =
-document.getElementById("sendBtn");
+</head>
 
-const typingIndicator =
-document.getElementById("typingIndicator");
+<body>
 
-/* =====================================================
-   STORAGE
-===================================================== */
+<!-- PARTICLES -->
 
-const CHAT_STORAGE =
-"snowchat_messages";
+<div id="particles"></div>
 
-/* =====================================================
-   TOAST SYSTEM
-===================================================== */
+<!-- TOASTS -->
 
-function showToast(message,type="success"){
+<div id="toastContainer"></div>
 
-    const container =
-    document.getElementById(
-        "toastContainer"
-    );
+<!-- SETTINGS MODAL -->
 
-    const toast =
-    document.createElement("div");
+<div class="settings-modal" id="settingsModal">
 
-    toast.className =
-    `toast ${type}`;
+    <div class="settings-card">
 
-    toast.innerHTML = `
-        <span>${message}</span>
-    `;
+        <div class="settings-header">
 
-    container.appendChild(toast);
+            <h2>User Settings</h2>
 
-    setTimeout(()=>{
+            <button id="closeSettings">
 
-        toast.style.opacity="0";
+                <i class="fas fa-times"></i>
 
-        setTimeout(()=>{
+            </button>
 
-            toast.remove();
+        </div>
 
-        },300);
+        <div class="settings-body">
 
-    },3000);
-}
+            <div class="avatar-section">
 
-/* =====================================================
-   TIME
-===================================================== */
+                <img
+                id="avatarPreview"
+                src="https://cdn.discordapp.com/embed/avatars/0.png">
 
-function getCurrentTime(){
-
-    return new Date()
-    .toLocaleTimeString([],{
-        hour:"2-digit",
-        minute:"2-digit"
-    });
-}
-
-/* =====================================================
-   MESSAGE TEMPLATE
-===================================================== */
-
-function createMessage(
-    author,
-    text,
-    avatar=
-    "https://via.placeholder.com/40"
-){
-
-    const message =
-    document.createElement("div");
-
-    message.classList.add(
-        "message",
-        "message-enter"
-    );
-
-    message.innerHTML = `
-
-        <img
-            class="message-avatar"
-            src="${avatar}"
-            alt="avatar">
-
-        <div class="message-content">
-
-            <div class="message-header">
-
-                <span class="message-author">
-
-                    ${author}
-
-                </span>
-
-                <span class="message-time">
-
-                    ${getCurrentTime()}
-
-                </span>
+                <input
+                type="file"
+                id="avatarInput"
+                accept="image/*">
 
             </div>
 
-            <div class="message-text">
+            <div class="setting-group">
 
-                ${text}
+                <label>Display Name</label>
+
+                <input
+                id="displayName"
+                type="text"
+                placeholder="SnowUser">
+
+            </div>
+
+            <div class="setting-group">
+
+                <label>Bio</label>
+
+                <textarea
+                id="bio"
+                rows="4"
+                placeholder="Tell everyone about yourself..."></textarea>
+
+            </div>
+
+            <div class="setting-group">
+
+                <label>Custom Status</label>
+
+                <input
+                id="customStatus"
+                type="text"
+                placeholder="❄️ Chilling">
+
+            </div>
+
+            <button id="saveSettings">
+
+                Save Changes
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- PROFILE MODAL -->
+
+<div class="profile-modal" id="profileModal">
+
+    <div class="profile-card">
+
+        <div class="profile-banner"></div>
+
+        <div class="profile-content">
+
+            <img
+            id="profileModalAvatar"
+            src="https://cdn.discordapp.com/embed/avatars/0.png">
+
+            <h2 id="modalName">
+
+                SnowUser
+
+            </h2>
+
+            <p id="modalBio">
+
+                Welcome to SnowChat
+
+            </p>
+
+            <div class="profile-badges">
+
+                <span>❄️ Founder</span>
+                <span>🚀 Early User</span>
 
             </div>
 
         </div>
 
-    `;
+    </div>
 
-    return message;
-}
+</div>
 
-/* =====================================================
-   SAVE MESSAGES
-===================================================== */
+<!-- MAIN APP -->
 
-function saveMessages(){
+<div class="app">
 
-    localStorage.setItem(
-        CHAT_STORAGE,
-        messagesContainer.innerHTML
-    );
-}
+    <!-- SERVER BAR -->
 
-/* =====================================================
-   LOAD MESSAGES
-===================================================== */
+    <aside class="servers">
 
-function loadMessages(){
+        <div class="server-logo">
 
-    const saved =
-    localStorage.getItem(
-        CHAT_STORAGE
-    );
+            ❄️
 
-    if(saved){
-
-        messagesContainer.innerHTML =
-        saved;
-    }
-}
-
-/* =====================================================
-   SCROLL
-===================================================== */
-
-function scrollBottom(){
-
-    messagesContainer.scrollTop =
-    messagesContainer.scrollHeight;
-}
-
-/* =====================================================
-   SEND MESSAGE
-===================================================== */
-
-function sendMessage(){
-
-    const text =
-    messageInput.value.trim();
-
-    if(!text) return;
-
-    const username =
-    localStorage.getItem(
-        "snowchat_name"
-    ) || "SnowUser";
-
-    const avatar =
-    localStorage.getItem(
-        "snowchat_avatar"
-    ) ||
-    "https://via.placeholder.com/40";
-
-    const message =
-    createMessage(
-        username,
-        text,
-        avatar
-    );
-
-    messagesContainer.appendChild(
-        message
-    );
-
-    saveMessages();
-
-    scrollBottom();
-
-    messageInput.value = "";
-
-    typingIndicator.textContent =
-    "";
-
-    console.log(
-        "📨 Message Sent:",
-        text
-    );
-}
-
-/* =====================================================
-   BUTTON SEND
-===================================================== */
-
-sendBtn.addEventListener(
-    "click",
-    sendMessage
-);
-
-/* =====================================================
-   ENTER SEND
-===================================================== */
-
-messageInput.addEventListener(
-    "keydown",
-    e => {
-
-        if(
-            e.key === "Enter"
-        ){
-
-            sendMessage();
-        }
-    }
-);
-
-/* =====================================================
-   TYPING INDICATOR
-===================================================== */
-
-let typingTimeout;
-
-messageInput.addEventListener(
-    "input",
-    () => {
-
-        typingIndicator.innerHTML =
-        `
-        <div class="typing-dots">
-            <span></span>
-            <span></span>
-            <span></span>
         </div>
 
-        You are typing...
-        `;
+        <div class="server active">
 
-        clearTimeout(
-            typingTimeout
-        );
+            <i class="fas fa-comments"></i>
 
-        typingTimeout =
-        setTimeout(()=>{
+        </div>
 
-            typingIndicator.innerHTML =
-            "";
+        <div class="server">
 
-        },1500);
-    }
-);
+            <i class="fas fa-gamepad"></i>
 
-/* =====================================================
-   MOCK SYSTEM MESSAGE
-===================================================== */
+        </div>
 
-setTimeout(()=>{
+        <div class="server">
 
-    const system =
-    document.createElement("div");
+            <i class="fas fa-code"></i>
 
-    system.className =
-    "system-message";
+        </div>
 
-    system.textContent =
-    "❄️ Welcome to SnowChat";
+        <div class="server">
 
-    messagesContainer.appendChild(
-        system
-    );
+            <i class="fas fa-plus"></i>
 
-},1000);
+        </div>
 
-/* =====================================================
-   LOAD SAVED DATA
-===================================================== */
+    </aside>
 
-window.addEventListener(
-    "load",
-    ()=>{
+    <!-- CHANNELS -->
 
-        loadMessages();
+    <aside class="channels">
 
-        scrollBottom();
+        <div class="channel-header">
 
-        showToast(
-            "❄️ SnowChat Ready!"
-        );
-    }
-);
-/* =====================================================
-   PART 2
-   PROFILE SYSTEM
-===================================================== */
+            SnowChat
 
-console.log("👤 Profile System Loaded");
+        </div>
 
-/* =====================================================
-   ELEMENTS
-===================================================== */
+        <div class="channel-category">
 
-const settingsBtn =
-document.getElementById("settingsBtn");
+            TEXT CHANNELS
 
-const settingsModal =
-document.getElementById("settingsModal");
+        </div>
 
-const closeSettings =
-document.getElementById("closeSettings");
+        <div class="channel active">
 
-const saveSettingsBtn =
-document.getElementById("saveSettings");
+            <i class="fas fa-hashtag"></i>
 
-const avatarInput =
-document.getElementById("avatarInput");
+            general
 
-const displayNameInput =
-document.getElementById("displayName");
+        </div>
 
-const bioInput =
-document.getElementById("bio");
+        <div class="channel">
 
-const customStatusInput =
-document.getElementById("customStatus");
+            <i class="fas fa-hashtag"></i>
 
-const profileName =
-document.getElementById("profileName");
+            gaming
 
-const userStatus =
-document.getElementById("userStatus");
+        </div>
 
-const profileAvatar =
-document.getElementById("profileAvatar");
+        <div class="channel">
 
-/* =====================================================
-   STORAGE KEYS
-===================================================== */
+            <i class="fas fa-hashtag"></i>
 
-const USER_STORAGE = {
+            coding
 
-    name: "snowchat_name",
+        </div>
 
-    bio: "snowchat_bio",
+        <div class="channel">
 
-    status: "snowchat_status",
+            <i class="fas fa-hashtag"></i>
 
-    avatar: "snowchat_avatar"
+            memes
 
-};
+        </div>
 
-/* =====================================================
-   OPEN SETTINGS
-===================================================== */
+        <div class="channel-category">
 
-settingsBtn.addEventListener(
-    "click",
-    () => {
+            VOICE CHANNELS
 
-        settingsModal.classList.add(
-            "active"
-        );
+        </div>
 
-        document.body.style.overflow =
-        "hidden";
-    }
-);
+        <div class="voice-channel">
 
-/* =====================================================
-   CLOSE SETTINGS
-===================================================== */
+            <i class="fas fa-volume-up"></i>
 
-function closeSettingsModal(){
+            General VC
 
-    settingsModal.classList.remove(
-        "active"
-    );
+        </div>
 
-    document.body.style.overflow =
-    "hidden";
-}
+        <div class="voice-channel">
 
-closeSettings.addEventListener(
-    "click",
-    closeSettingsModal
-);
+            <i class="fas fa-volume-up"></i>
 
-/* =====================================================
-   CLOSE IF CLICK OUTSIDE
-===================================================== */
+            Chill Zone
 
-settingsModal.addEventListener(
-    "click",
-    e => {
+        </div>
 
-        if(
-            e.target === settingsModal
-        ){
+        <!-- USER BAR -->
 
-            closeSettingsModal();
-        }
-    }
-);
+        <div class="user-panel">
 
-/* =====================================================
-   LOAD PROFILE
-===================================================== */
+            <img
+            id="profileAvatar"
+            src="https://cdn.discordapp.com/embed/avatars/0.png">
 
-function loadProfile(){
+            <div>
 
-    const savedName =
-    localStorage.getItem(
-        USER_STORAGE.name
-    );
+                <h4 id="profileName">
 
-    const savedBio =
-    localStorage.getItem(
-        USER_STORAGE.bio
-    );
+                    SnowUser
 
-    const savedStatus =
-    localStorage.getItem(
-        USER_STORAGE.status
-    );
+                </h4>
 
-    const savedAvatar =
-    localStorage.getItem(
-        USER_STORAGE.avatar
-    );
+                <span id="userStatus">
 
-    if(savedName){
+                    🟢 Online
 
-        profileName.textContent =
-        savedName;
+                </span>
 
-        displayNameInput.value =
-        savedName;
-    }
+            </div>
 
-    if(savedBio){
+            <button id="settingsBtn">
 
-        bioInput.value =
-        savedBio;
-    }
+                <i class="fas fa-cog"></i>
 
-    if(savedStatus){
+            </button>
 
-        customStatusInput.value =
-        savedStatus;
+        </div>
 
-        userStatus.textContent =
-        savedStatus;
-    }
+    </aside>
 
-    if(savedAvatar){
+    <!-- CHAT -->
 
-        profileAvatar.src =
-        savedAvatar;
-    }
+    <main class="chat">
 
-    console.log(
-        "✅ Profile Loaded"
-    );
-}
+        <header class="chat-header">
 
-/* =====================================================
-   SAVE PROFILE
-===================================================== */
+            <div class="chat-title">
 
-function saveProfile(){
+                <i class="fas fa-hashtag"></i>
 
-    localStorage.setItem(
-        USER_STORAGE.name,
-        displayNameInput.value
-    );
+                <h3>general</h3>
 
-    localStorage.setItem(
-        USER_STORAGE.bio,
-        bioInput.value
-    );
+            </div>
 
-    localStorage.setItem(
-        USER_STORAGE.status,
-        customStatusInput.value
-    );
+            <div class="chat-actions">
 
-    profileName.textContent =
-    displayNameInput.value ||
-    "SnowUser";
+                <button>
 
-    userStatus.textContent =
-    customStatusInput.value ||
-    "🟢 Online";
+                    <i class="fas fa-bell"></i>
 
-    showToast(
-        "✅ Profile Saved!"
-    );
+                </button>
 
-    console.log(
-        "💾 Profile Saved"
-    );
-}
+                <button>
 
-/* =====================================================
-   SAVE BUTTON
-===================================================== */
+                    <i class="fas fa-user-friends"></i>
 
-saveSettingsBtn.addEventListener(
-    "click",
-    () => {
+                </button>
 
-        saveProfile();
+                <button id="themeToggle">
 
-        closeSettingsModal();
-    }
-);
+                    <i class="fas fa-moon"></i>
 
-/* =====================================================
-   AVATAR UPLOAD
-===================================================== */
+                </button>
 
-avatarInput.addEventListener(
-    "change",
-    e => {
+            </div>
 
-        const file =
-        e.target.files[0];
+        </header>
 
-        if(!file) return;
+        <div class="messages" id="messages">
 
-        if(
-            !file.type.startsWith(
-                "image/"
-            )
-        ){
+            <div class="welcome-screen">
 
-            showToast(
-                "❌ Select an image",
-                "error"
-            );
+                <h1>
 
-            return;
-        }
+                    ❄️ Welcome to SnowChat
 
-        const reader =
-        new FileReader();
+                </h1>
 
-        reader.onload = () => {
+                <p>
 
-            profileAvatar.src =
-            reader.result;
+                    Start chatting with your community.
 
-            localStorage.setItem(
-                USER_STORAGE.avatar,
-                reader.result
-            );
+                </p>
 
-            showToast(
-                "🖼️ Avatar Updated!"
-            );
+            </div>
 
-            console.log(
-                "📸 Avatar Saved"
-            );
-        };
+        </div>
 
-        reader.readAsDataURL(
-            file
-        );
-    }
-);
+        <div id="typingIndicator"></div>
 
-/* =====================================================
-   LIVE NAME UPDATE
-===================================================== */
+        <div class="message-box">
 
-displayNameInput.addEventListener(
-    "input",
-    () => {
+            <button id="emojiBtn">
 
-        profileName.textContent =
-        displayNameInput.value ||
-        "SnowUser";
-    }
-);
-
-/* =====================================================
-   LIVE STATUS UPDATE
-===================================================== */
-
-customStatusInput.addEventListener(
-    "input",
-    () => {
-
-        userStatus.textContent =
-        customStatusInput.value ||
-        "🟢 Online";
-    }
-);
+                😀
+            </button>
 
-/* =====================================================
-   PROFILE MODAL
-===================================================== */
-
-const profileModal =
-document.getElementById(
-    "profileModal"
-);
-
-const profileModalAvatar =
-document.getElementById(
-    "profileModalAvatar"
-);
-
-profileAvatar.addEventListener(
-    "click",
-    () => {
-
-        profileModal.classList.add(
-            "active"
-        );
-
-        profileModalAvatar.src =
-        profileAvatar.src;
-    }
-);
-
-profileModal.addEventListener(
-    "click",
-    e => {
-
-        if(
-            e.target === profileModal
-        ){
-
-            profileModal.classList.remove(
-                "active"
-            );
-        }
-    }
-);
-
-/* =====================================================
-   DEFAULT USER
-===================================================== */
-
-if(
-    !localStorage.getItem(
-        USER_STORAGE.name
-    )
-){
-
-    localStorage.setItem(
-        USER_STORAGE.name,
-        "SnowUser"
-    );
-}
-
-/* =====================================================
-   ACCOUNT STATS
-===================================================== */
-
-function generateStats(){
-
-    if(
-        !localStorage.getItem(
-            "snowchat_joined"
-        )
-    ){
-
-        localStorage.setItem(
-            "snowchat_joined",
-            Date.now()
-        );
-    }
-
-    const joined =
-    localStorage.getItem(
-        "snowchat_joined"
-    );
-
-    console.log(
-        "📊 Joined:",
-        new Date(
-            Number(joined)
-        )
-    );
-}
-
-generateStats();
-
-/* =====================================================
-   ACHIEVEMENTS
-===================================================== */
-
-function unlockAchievement(
-    title
-){
-
-    const achievements =
-    JSON.parse(
-        localStorage.getItem(
-            "snowchat_achievements"
-        ) || "[]"
-    );
-
-    if(
-        achievements.includes(
-            title
-        )
-    ) return;
-
-    achievements.push(
-        title
-    );
-
-    localStorage.setItem(
-        "snowchat_achievements",
-        JSON.stringify(
-            achievements
-        )
-    );
-
-    showToast(
-        `🏆 ${title}`
-    );
-
-    console.log(
-        "🏆 Achievement:",
-        title
-    );
-}
-
-/* =====================================================
-   FIRST VISIT BADGE
-===================================================== */
-
-if(
-    !localStorage.getItem(
-        "first_visit_badge"
-    )
-){
-
-    unlockAchievement(
-        "Welcome to SnowChat"
-    );
-
-    localStorage.setItem(
-        "first_visit_badge",
-        "true"
-    );
-}
-
-/* =====================================================
-   LOAD PROFILE ON START
-===================================================== */
-
-window.addEventListener(
-    "load",
-    () => {
-
-        loadProfile();
-    }
-);
-/* =====================================================
-   PART 3
-   THEME + UX SYSTEM
-===================================================== */
-
-console.log("🌙 Theme & UX System Loaded");
-
-/* =====================================================
-   THEME TOGGLE
-===================================================== */
-
-const themeToggle =
-document.getElementById(
-    "themeToggle"
-);
-
-const THEME_KEY =
-"snowchat_theme";
-
-function applyTheme(theme){
-
-    if(theme === "light"){
-
-        document.body.classList.add(
-            "light"
-        );
-
-        themeToggle.innerHTML =
-        '<i class="fas fa-sun"></i>';
-
-    }else{
-
-        document.body.classList.remove(
-            "light"
-        );
-
-        themeToggle.innerHTML =
-        '<i class="fas fa-moon"></i>';
-    }
-
-    localStorage.setItem(
-        THEME_KEY,
-        theme
-    );
-}
-
-themeToggle?.addEventListener(
-    "click",
-    () => {
-
-        const isLight =
-        document.body.classList.contains(
-            "light"
-        );
-
-        applyTheme(
-            isLight
-            ? "dark"
-            : "light"
-        );
-
-        showToast(
-            isLight
-            ? "🌙 Dark Mode Enabled"
-            : "☀️ Light Mode Enabled"
-        );
-    }
-);
-
-/* =====================================================
-   LOAD THEME
-===================================================== */
-
-window.addEventListener(
-    "load",
-    () => {
-
-        const savedTheme =
-        localStorage.getItem(
-            THEME_KEY
-        ) || "dark";
-
-        applyTheme(
-            savedTheme
-        );
-    }
-);
-
-/* =====================================================
-   CHANNEL SWITCHING
-===================================================== */
-
-const channels =
-document.querySelectorAll(
-    ".channel"
-);
-
-const chatTitle =
-document.querySelector(
-    ".chat-title h3"
-);
-
-channels.forEach(channel => {
-
-    channel.addEventListener(
-        "click",
-        () => {
-
-            channels.forEach(c =>
-                c.classList.remove(
-                    "active"
-                )
-            );
-
-            channel.classList.add(
-                "active"
-            );
-
-            const channelName =
-            channel.textContent.trim();
-
-            if(chatTitle){
-
-                chatTitle.textContent =
-                channelName;
-            }
-
-            showToast(
-                `📢 Switched to #${channelName}`
-            );
-
-            console.log(
-                "Channel:",
-                channelName
-            );
-        }
-    );
-});
-
-/* =====================================================
-   KEYBOARD SHORTCUTS
-===================================================== */
-
-document.addEventListener(
-    "keydown",
-    e => {
-
-        /* ESC CLOSES MODALS */
-
-        if(
-            e.key === "Escape"
-        ){
-
-            settingsModal?.classList.remove(
-                "active"
-            );
-
-            profileModal?.classList.remove(
-                "active"
-            );
-
-            console.log(
-                "ESC pressed"
-            );
-        }
-
-        /* CTRL + K */
-
-        if(
-            e.ctrlKey &&
-            e.key.toLowerCase() === "k"
-        ){
-
-            e.preventDefault();
-
-            messageInput.focus();
-
-            showToast(
-                "⌨️ Quick Chat Focus"
-            );
-        }
-
-        /* CTRL + D */
-
-        if(
-            e.ctrlKey &&
-            e.key.toLowerCase() === "d"
-        ){
-
-            e.preventDefault();
-
-            themeToggle.click();
-        }
-    }
-);
-
-/* =====================================================
-   DESKTOP NOTIFICATIONS
-===================================================== */
-
-function requestNotificationPermission(){
-
-    if(
-        "Notification"
-        in window
-    ){
-
-        if(
-            Notification.permission
-            !== "granted"
-        ){
-
-            Notification.requestPermission();
-        }
-    }
-}
-
-requestNotificationPermission();
-
-function pushNotification(
-    title,
-    body
-){
-
-    if(
-        "Notification"
-        in window
-    ){
-
-        if(
-            Notification.permission
-            === "granted"
-        ){
-
-            new Notification(
-                title,
-                {
-                    body
-                }
-            );
-        }
-    }
-}
-
-/* =====================================================
-   INACTIVITY WARNING
-===================================================== */
-
-let inactiveTimer;
-
-function resetActivity(){
-
-    clearTimeout(
-        inactiveTimer
-    );
-
-    inactiveTimer =
-    setTimeout(() => {
-
-        showToast(
-            "⚠️ You've been inactive for 5 minutes",
-            "warning"
-        );
-
-    },300000);
-}
-
-[
-    "mousemove",
-    "keydown",
-    "click"
-].forEach(event => {
-
-    document.addEventListener(
-        event,
-        resetActivity
-    );
-});
-
-resetActivity();
-
-/* =====================================================
-   SESSION START
-===================================================== */
-
-if(
-    !sessionStorage.getItem(
-        "snowchat_session"
-    )
-){
-
-    sessionStorage.setItem(
-        "snowchat_session",
-        Date.now()
-    );
-
-    console.log(
-        "🚀 New Session Started"
-    );
-}
-
-/* =====================================================
-   LAST LOGIN
-===================================================== */
-
-const LAST_LOGIN_KEY =
-"snowchat_last_login";
-
-const previousLogin =
-localStorage.getItem(
-    LAST_LOGIN_KEY
-);
-
-if(previousLogin){
-
-    console.log(
-        "Last Login:",
-        new Date(
-            Number(previousLogin)
-        )
-    );
-
-    setTimeout(() => {
-
-        showToast(
-            `👋 Welcome Back!`
-        );
-
-    },1500);
-}
-
-localStorage.setItem(
-    LAST_LOGIN_KEY,
-    Date.now()
-);
-
-/* =====================================================
-   SOUND SYSTEM
-===================================================== */
-
-let soundsEnabled =
-JSON.parse(
-    localStorage.getItem(
-        "snowchat_sounds"
-    ) || "false"
-);
-
-function playClick(){
-
-    if(!soundsEnabled)
-        return;
-
-    const audio =
-    new Audio(
-        "https://actions.google.com/sounds/v1/cartoon/pop.ogg"
-    );
-
-    audio.volume = .2;
-
-    audio.play();
-}
-
-document.querySelectorAll(
-    "button"
-).forEach(btn => {
-
-    btn.addEventListener(
-        "click",
-        playClick
-    );
-});
-
-/* =====================================================
-   SOUND TOGGLE
-===================================================== */
-
-function toggleSounds(){
-
-    soundsEnabled =
-    !soundsEnabled;
-
-    localStorage.setItem(
-        "snowchat_sounds",
-        JSON.stringify(
-            soundsEnabled
-        )
-    );
-
-    showToast(
-        soundsEnabled
-        ? "🔊 Sounds Enabled"
-        : "🔇 Sounds Disabled"
-    );
-}
-
-/* =====================================================
-   RANDOM TIPS
-===================================================== */
-
-const tips = [
-
-    "❄️ Tip: Upload a custom avatar in Settings",
-
-    "⌨️ Ctrl + K focuses chat instantly",
-
-    "🌙 Ctrl + D toggles dark mode",
-
-    "🚀 SnowChat is just getting started",
-
-    "💎 Customize your profile from Settings"
-];
-
-function randomTip(){
-
-    const tip =
-    tips[
-        Math.floor(
-            Math.random() *
-            tips.length
-        )
-    ];
-
-    showToast(
-        tip
-    );
-}
-
-setTimeout(
-    randomTip,
-    5000
-);
-
-/* =====================================================
-   SERVER BUTTONS
-===================================================== */
-
-document
-.querySelectorAll(
-    ".server"
-)
-.forEach(server => {
-
-    server.addEventListener(
-        "click",
-        () => {
-
-            document
-            .querySelectorAll(
-                ".server"
-            )
-            .forEach(s =>
-                s.classList.remove(
-                    "active"
-                )
-            );
-
-            server.classList.add(
-                "active"
-            );
-
-            showToast(
-                "❄️ Server Switched"
-            );
-        }
-    );
-});
-
-/* =====================================================
-   APP LOADED
-===================================================== */
-
-window.addEventListener(
-    "load",
-    () => {
-
-        console.log(
-            "🔥 SnowChat UX Ready"
-        );
-
-        showToast(
-            "🚀 SnowChat Loaded Successfully"
-        );
-    }
-);
-/* =====================================================
-   PART 3
-   THEME + UX SYSTEM
-===================================================== */
-
-console.log("🌙 Theme & UX System Loaded");
-
-/* =====================================================
-   THEME TOGGLE
-===================================================== */
-
-const themeToggle =
-document.getElementById(
-    "themeToggle"
-);
-
-const THEME_KEY =
-"snowchat_theme";
-
-function applyTheme(theme){
-
-    if(theme === "light"){
-
-        document.body.classList.add(
-            "light"
-        );
-
-        themeToggle.innerHTML =
-        '<i class="fas fa-sun"></i>';
-
-    }else{
-
-        document.body.classList.remove(
-            "light"
-        );
-
-        themeToggle.innerHTML =
-        '<i class="fas fa-moon"></i>';
-    }
-
-    localStorage.setItem(
-        THEME_KEY,
-        theme
-    );
-}
-
-themeToggle?.addEventListener(
-    "click",
-    () => {
-
-        const isLight =
-        document.body.classList.contains(
-            "light"
-        );
-
-        applyTheme(
-            isLight
-            ? "dark"
-            : "light"
-        );
-
-        showToast(
-            isLight
-            ? "🌙 Dark Mode Enabled"
-            : "☀️ Light Mode Enabled"
-        );
-    }
-);
-
-/* =====================================================
-   LOAD THEME
-===================================================== */
-
-window.addEventListener(
-    "load",
-    () => {
-
-        const savedTheme =
-        localStorage.getItem(
-            THEME_KEY
-        ) || "dark";
-
-        applyTheme(
-            savedTheme
-        );
-    }
-);
-
-/* =====================================================
-   CHANNEL SWITCHING
-===================================================== */
-
-const channels =
-document.querySelectorAll(
-    ".channel"
-);
-
-const chatTitle =
-document.querySelector(
-    ".chat-title h3"
-);
-
-channels.forEach(channel => {
-
-    channel.addEventListener(
-        "click",
-        () => {
-
-            channels.forEach(c =>
-                c.classList.remove(
-                    "active"
-                )
-            );
-
-            channel.classList.add(
-                "active"
-            );
-
-            const channelName =
-            channel.textContent.trim();
-
-            if(chatTitle){
-
-                chatTitle.textContent =
-                channelName;
-            }
-
-            showToast(
-                `📢 Switched to #${channelName}`
-            );
-
-            console.log(
-                "Channel:",
-                channelName
-            );
-        }
-    );
-});
-
-/* =====================================================
-   KEYBOARD SHORTCUTS
-===================================================== */
-
-document.addEventListener(
-    "keydown",
-    e => {
-
-        /* ESC CLOSES MODALS */
-
-        if(
-            e.key === "Escape"
-        ){
-
-            settingsModal?.classList.remove(
-                "active"
-            );
-
-            profileModal?.classList.remove(
-                "active"
-            );
-
-            console.log(
-                "ESC pressed"
-            );
-        }
-
-        /* CTRL + K */
-
-        if(
-            e.ctrlKey &&
-            e.key.toLowerCase() === "k"
-        ){
-
-            e.preventDefault();
-
-            messageInput.focus();
-
-            showToast(
-                "⌨️ Quick Chat Focus"
-            );
-        }
-
-        /* CTRL + D */
-
-        if(
-            e.ctrlKey &&
-            e.key.toLowerCase() === "d"
-        ){
-
-            e.preventDefault();
-
-            themeToggle.click();
-        }
-    }
-);
-
-/* =====================================================
-   DESKTOP NOTIFICATIONS
-===================================================== */
-
-function requestNotificationPermission(){
-
-    if(
-        "Notification"
-        in window
-    ){
-
-        if(
-            Notification.permission
-            !== "granted"
-        ){
-
-            Notification.requestPermission();
-        }
-    }
-}
-
-requestNotificationPermission();
-
-function pushNotification(
-    title,
-    body
-){
-
-    if(
-        "Notification"
-        in window
-    ){
-
-        if(
-            Notification.permission
-            === "granted"
-        ){
-
-            new Notification(
-                title,
-                {
-                    body
-                }
-            );
-        }
-    }
-}
-
-/* =====================================================
-   INACTIVITY WARNING
-===================================================== */
-
-let inactiveTimer;
-
-function resetActivity(){
-
-    clearTimeout(
-        inactiveTimer
-    );
-
-    inactiveTimer =
-    setTimeout(() => {
-
-        showToast(
-            "⚠️ You've been inactive for 5 minutes",
-            "warning"
-        );
-
-    },300000);
-}
-
-[
-    "mousemove",
-    "keydown",
-    "click"
-].forEach(event => {
-
-    document.addEventListener(
-        event,
-        resetActivity
-    );
-});
-
-resetActivity();
-
-/* =====================================================
-   SESSION START
-===================================================== */
-
-if(
-    !sessionStorage.getItem(
-        "snowchat_session"
-    )
-){
-
-    sessionStorage.setItem(
-        "snowchat_session",
-        Date.now()
-    );
-
-    console.log(
-        "🚀 New Session Started"
-    );
-}
-
-/* =====================================================
-   LAST LOGIN
-===================================================== */
-
-const LAST_LOGIN_KEY =
-"snowchat_last_login";
-
-const previousLogin =
-localStorage.getItem(
-    LAST_LOGIN_KEY
-);
-
-if(previousLogin){
-
-    console.log(
-        "Last Login:",
-        new Date(
-            Number(previousLogin)
-        )
-    );
-
-    setTimeout(() => {
-
-        showToast(
-            `👋 Welcome Back!`
-        );
-
-    },1500);
-}
-
-localStorage.setItem(
-    LAST_LOGIN_KEY,
-    Date.now()
-);
-
-/* =====================================================
-   SOUND SYSTEM
-===================================================== */
-
-let soundsEnabled =
-JSON.parse(
-    localStorage.getItem(
-        "snowchat_sounds"
-    ) || "false"
-);
-
-function playClick(){
-
-    if(!soundsEnabled)
-        return;
-
-    const audio =
-    new Audio(
-        "https://actions.google.com/sounds/v1/cartoon/pop.ogg"
-    );
-
-    audio.volume = .2;
-
-    audio.play();
-}
-
-document.querySelectorAll(
-    "button"
-).forEach(btn => {
-
-    btn.addEventListener(
-        "click",
-        playClick
-    );
-});
-
-/* =====================================================
-   SOUND TOGGLE
-===================================================== */
-
-function toggleSounds(){
-
-    soundsEnabled =
-    !soundsEnabled;
-
-    localStorage.setItem(
-        "snowchat_sounds",
-        JSON.stringify(
-            soundsEnabled
-        )
-    );
-
-    showToast(
-        soundsEnabled
-        ? "🔊 Sounds Enabled"
-        : "🔇 Sounds Disabled"
-    );
-}
-
-/* =====================================================
-   RANDOM TIPS
-===================================================== */
-
-const tips = [
-
-    "❄️ Tip: Upload a custom avatar in Settings",
-
-    "⌨️ Ctrl + K focuses chat instantly",
-
-    "🌙 Ctrl + D toggles dark mode",
-
-    "🚀 SnowChat is just getting started",
-
-    "💎 Customize your profile from Settings"
-];
-
-function randomTip(){
-
-    const tip =
-    tips[
-        Math.floor(
-            Math.random() *
-            tips.length
-        )
-    ];
-
-    showToast(
-        tip
-    );
-}
-
-setTimeout(
-    randomTip,
-    5000
-);
-
-/* =====================================================
-   SERVER BUTTONS
-===================================================== */
-
-document
-.querySelectorAll(
-    ".server"
-)
-.forEach(server => {
-
-    server.addEventListener(
-        "click",
-        () => {
-
-            document
-            .querySelectorAll(
-                ".server"
-            )
-            .forEach(s =>
-                s.classList.remove(
-                    "active"
-                )
-            );
-
-            server.classList.add(
-                "active"
-            );
-
-            showToast(
-                "❄️ Server Switched"
-            );
-        }
-    );
-});
-
-/* =====================================================
-   APP LOADED
-===================================================== */
-
-window.addEventListener(
-    "load",
-    () => {
-
-        console.log(
-            "🔥 SnowChat UX Ready"
-        );
-
-        showToast(
-            "🚀 SnowChat Loaded Successfully"
-        );
-    }
-);
-/* =====================================================
-   PART 5
-   INSANE MODE
-===================================================== */
-
-console.log("🚀 INSANE MODE ACTIVATED");
-
-/* =====================================================
-   XP SYSTEM
-===================================================== */
-
-const XP_KEY = "snowchat_xp";
-const LEVEL_KEY = "snowchat_level";
-
-let xp =
-Number(
-localStorage.getItem(XP_KEY)
-) || 0;
-
-let level =
-Number(
-localStorage.getItem(LEVEL_KEY)
-) || 1;
-
-function addXP(amount){
-
-xp += amount;
-
-const required =
-level * 100;
-
-if(xp >= required){
-
-xp = 0;
-
-level++;
-
-localStorage.setItem(
-LEVEL_KEY,
-level
-);
-
-showToast(
-`🎉 Level Up! Level ${level}`
-);
-
-launchConfetti();
-
-}
-
-localStorage.setItem(
-XP_KEY,
-xp
-);
-
-}
-
-/* =====================================================
-   MESSAGE XP
-===================================================== */
-
-document.addEventListener(
-"click",
-e => {
-
-if(
-e.target.id ===
-"sendBtn"
-){
-
-addXP(10);
-
-}
-
-}
-);
-
-/* =====================================================
-   USER STATS
-===================================================== */
-
-function getStats(){
-
-const stats = {
-
-messages:
-document.querySelectorAll(
-".message"
-).length,
-
-level,
-
-xp
-
-};
-
-console.table(stats);
-
-return stats;
-
-}
-
-/* =====================================================
-   FRIEND REQUESTS
-===================================================== */
-
-const mockFriends = [
-
-"Alex",
-"Sarah",
-"Ethan",
-"Nova",
-"Luna"
-
-];
-
-function randomFriendRequest(){
-
-const user =
-
-mockFriends[
-Math.floor(
-Math.random()
-*
-mockFriends.length
-)
-];
-
-showToast(
-`👥 Friend Request from ${user}`
-);
-
-}
-
-setInterval(
-
-randomFriendRequest,
-
-120000
-
-);
-
-/* =====================================================
-   VOICE CHANNEL EFFECTS
-===================================================== */
-
-document
-.querySelectorAll(
-".voice-channel"
-)
-.forEach(channel => {
-
-channel.addEventListener(
-"click",
-() => {
-
-channel.classList.toggle(
-"connected"
-);
-
-if(
-channel.classList.contains(
-"connected"
-)
-){
-
-showToast(
-"🎙 Joined Voice Channel"
-);
-
-}else{
-
-showToast(
-"📞 Left Voice Channel"
-);
-
-}
-
-}
-);
-
-});
-
-/* =====================================================
-   ACHIEVEMENTS
-===================================================== */
-
-function unlockAchievement(
-title,
-description=""
-){
+            <input
+            id="messageInput"
+            type="text"
+            placeholder="Message #general">
 
-let achievements =
-JSON.parse(
-localStorage.getItem(
-"snowchat_achievements"
-)
-||
-"[]"
-);
+            <button id="sendBtn">
 
-if(
-achievements.includes(
-title
-)
-)
-return;
+                <i class="fas fa-paper-plane"></i>
 
-achievements.push(
-title
-);
+            </button>
 
-localStorage.setItem(
+        </div>
 
-"snowchat_achievements",
+    </main>
 
-JSON.stringify(
-achievements
-)
+    <!-- MEMBERS -->
 
-);
+    <aside class="members">
 
-showToast(
-`🏆 ${title}`
-);
+        <div class="members-header">
 
-launchConfetti();
+            MEMBERS — 5
 
-console.log(
-title,
-description
-);
+        </div>
 
-}
+        <div class="member">
 
-/* =====================================================
-   PARTICLE ENGINE
-===================================================== */
+            <img
+            src="https://cdn.discordapp.com/embed/avatars/1.png">
 
-function createParticles(){
+            <span>
 
-const container =
-document.createElement(
-"div"
-);
+                SnowBot
 
-container.className =
-"particles";
+            </span>
 
-document.body.appendChild(
-container
-);
+            <div class="status online"></div>
 
-for(
-let i = 0;
-i < 60;
-i++
-){
+        </div>
 
-const particle =
-document.createElement(
-"div"
-);
+        <div class="member">
 
-particle.className =
-"particle";
+            <img
+            src="https://cdn.discordapp.com/embed/avatars/2.png">
 
-particle.style.width =
-Math.random()*6+2+"px";
+            <span>
 
-particle.style.height =
-particle.style.width;
+                Luna
 
-particle.style.left =
-Math.random()*100+"%";
+            </span>
 
-particle.style.animationDuration =
-Math.random()*20+10+"s";
+            <div class="status online"></div>
 
-particle.style.opacity =
-Math.random();
+        </div>
 
-container.appendChild(
-particle
-);
+        <div class="member">
 
-}
+            <img
+            src="https://cdn.discordapp.com/embed/avatars/3.png">
 
-}
+            <span>
 
-createParticles();
+                Alex
 
-/* =====================================================
-   GRADIENT ORBS
-===================================================== */
+            </span>
 
-function createOrbs(){
+            <div class="status idle"></div>
 
-const orb1 =
-document.createElement("div");
+        </div>
 
-orb1.className =
-"orb orb1";
+        <div class="member">
 
-const orb2 =
-document.createElement("div");
+            <img
+            src="https://cdn.discordapp.com/embed/avatars/4.png">
 
-orb2.className =
-"orb orb2";
+            <span>
 
-const orb3 =
-document.createElement("div");
+                Nova
 
-orb3.className =
-"orb orb3";
+            </span>
 
-document.body.append(
-orb1,
-orb2,
-orb3
-);
+            <div class="status dnd"></div>
 
-}
+        </div>
 
-createOrbs();
+    </aside>
 
-/* =====================================================
-   SESSION TIMER
-===================================================== */
+</div>
 
-const SESSION_START =
-Date.now();
+<!-- CONTEXT MENU -->
 
-setInterval(() => {
+<div id="contextMenu" class="context-menu">
 
-const mins =
+    <div id="replyMessage">
 
-Math.floor(
-(
-Date.now()
--
-SESSION_START
-)
-/
-60000
-);
+        ↩️ Reply
 
-console.log(
-`⏱ Session: ${mins} min`
-);
+    </div>
 
-},60000);
+    <div id="editMessage">
 
-/* =====================================================
-   DAILY REWARD
-===================================================== */
+        ✏️ Edit
 
-const DAILY_KEY =
-"snowchat_daily_reward";
+    </div>
 
-const today =
-new Date()
-.toDateString();
+    <div id="deleteMessage">
 
-if(
+        🗑 Delete
 
-localStorage.getItem(
-DAILY_KEY
-)
+    </div>
 
-!==
+</div>
 
-today
+<!-- EMOJI PICKER -->
 
-){
+<div id="emojiPicker" class="emoji-picker"></div>
 
-localStorage.setItem(
-DAILY_KEY,
-today
-);
+<script src="js/app.js"></script>
 
-showToast(
-"🎁 Daily Reward +50 XP"
-);
-
-addXP(50);
-
-}
-
-/* =====================================================
-   CONFETTI
-===================================================== */
-
-function launchConfetti(){
-
-for(
-let i = 0;
-i < 80;
-i++
-){
-
-const confetti =
-document.createElement(
-"div"
-);
-
-confetti.style.position =
-"fixed";
-
-confetti.style.width =
-"8px";
-
-confetti.style.height =
-"8px";
-
-confetti.style.left =
-Math.random()*100+"vw";
-
-confetti.style.top =
-"-10px";
-
-confetti.style.zIndex =
-99999;
-
-confetti.style.borderRadius =
-"50%";
-
-confetti.style.background =
-`hsl(${Math.random()*360}
-100%
-60%)`;
-
-confetti.style.transition =
-"all 3s ease";
-
-document.body.appendChild(
-confetti
-);
-
-requestAnimationFrame(
-() => {
-
-confetti.style.transform =
-`translateY(
-${window.innerHeight+200}px
-)
-rotate(
-${Math.random()*720}deg
-)`;
-
-confetti.style.opacity =
-"0";
-
-}
-);
-
-setTimeout(
-() => {
-
-confetti.remove();
-
-},
-3000
-);
-
-}
-
-}
-
-/* =====================================================
-   LOGIN STREAK
-===================================================== */
-
-const STREAK_KEY =
-"snowchat_streak";
-
-let streak =
-Number(
-localStorage.getItem(
-STREAK_KEY
-)
-) || 0;
-
-streak++;
-
-localStorage.setItem(
-STREAK_KEY,
-streak
-);
-
-console.log(
-`🔥 Streak: ${streak}`
-);
-
-/* =====================================================
-   PREMIUM PROFILE
-===================================================== */
-
-function enableNitro(){
-
-profileAvatar.classList.add(
-"nitro"
-);
-
-showToast(
-"💎 SnowChat Premium Activated"
-);
-
-}
-
-window.enableNitro =
-enableNitro;
-
-/* =====================================================
-   USER BADGES
-===================================================== */
-
-function generateBadges(){
-
-const badges = [];
-
-if(level >= 5)
-badges.push(
-"🌟 Rising Star"
-);
-
-if(level >= 10)
-badges.push(
-"🚀 Veteran"
-);
-
-if(streak >= 30)
-badges.push(
-"🔥 Dedicated"
-);
-
-console.log(
-"Badges:",
-badges
-);
-
-return badges;
-
-}
-
-generateBadges();
-
-/* =====================================================
-   ACHIEVEMENTS
-===================================================== */
-
-if(level >= 5){
-
-unlockAchievement(
-"Rising Star"
-);
-
-}
-
-if(level >= 10){
-
-unlockAchievement(
-"Veteran"
-);
-
-}
-
-/* =====================================================
-   ANNOUNCEMENT SYSTEM
-===================================================== */
-
-function announce(text){
-
-const system =
-document.createElement(
-"div"
-);
-
-system.className =
-"system-message";
-
-system.innerHTML =
-`📢 ${text}`;
-
-messagesContainer.appendChild(
-system
-);
-
-scrollBottom();
-
-}
-
-window.announce =
-announce;
-
-/* =====================================================
-   RANDOM ANNOUNCEMENTS
-===================================================== */
-
-const announcements = [
-
-"Welcome to SnowChat 🚀",
-
-"New Features Coming Soon",
-
-"Snowflake Technologies ❤️",
-
-"Stay Frosty ❄️",
-
-"Have Fun Chatting"
-
-];
-
-setInterval(() => {
-
-announce(
-
-announcements[
-Math.floor(
-Math.random()
-*
-announcements.length
-)
-]
-
-);
-
-},300000);
-
-/* =====================================================
-   APP COMPLETED
-===================================================== */
-
-setTimeout(() => {
-
-showToast(
-"🚀 SnowChat Ultimate Edition Loaded"
-);
-
-launchConfetti();
-
-},2000);
-
-console.log(
-"❄️ SnowChat Ultimate Ready"
-);
+</body>
+</html>
