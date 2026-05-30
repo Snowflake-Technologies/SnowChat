@@ -2,39 +2,17 @@ import {
   BrowserRouter,
   Routes,
   Route
-} from "react-router-dom";
-
-function Home() {
-
-  return (
-
-    <div
-      style={{
-        height: "100vh",
-        display: "grid",
-        placeItems: "center",
-        background: "#1e1f22",
-        color: "white"
-      }}
-    >
-
-      <div>
-
-        <h1>
-          ❄️ SnowChat
-        </h1>
-
-        <p>
-          Discord Alternative
-        </p>
-
-      </div>
-
-    </div>
-
-  );
-
 }
+from "react-router-dom";
+
+import Login
+from "../pages/Login";
+
+import Register
+from "../pages/Register";
+
+import Chat
+from "../pages/Chat";
 
 export default function Router() {
 
@@ -46,7 +24,17 @@ export default function Router() {
 
         <Route
           path="/"
-          element={<Home />}
+          element={<Login />}
+        />
+
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+
+        <Route
+          path="/chat"
+          element={<Chat />}
         />
 
       </Routes>
