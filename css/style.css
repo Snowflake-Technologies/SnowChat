@@ -1,139 +1,2548 @@
+/* =====================================================
+   SNOWCHAT
+   Discord Inspired UI
+===================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root{
+
+    --bg-primary:#313338;
+    --bg-secondary:#2b2d31;
+    --bg-tertiary:#1e1f22;
+
+    --channel-hover:#35373c;
+    --channel-active:#404249;
+
+    --text-primary:#ffffff;
+    --text-secondary:#b5bac1;
+    --text-muted:#949ba4;
+
+    --accent:#5865f2;
+    --accent-hover:#4752c4;
+
+    --success:#23a55a;
+    --warning:#faa81a;
+    --danger:#f23f42;
+
+    --border:rgba(255,255,255,.08);
+
+    --shadow:
+    0 12px 30px rgba(0,0,0,.25);
+
+    --transition:.25s ease;
+}
+
+/* =====================================================
+   LIGHT MODE
+===================================================== */
+
+body.light{
+
+    --bg-primary:#ffffff;
+    --bg-secondary:#f2f3f5;
+    --bg-tertiary:#e3e5e8;
+
+    --channel-hover:#e7e8ec;
+    --channel-active:#d9dce0;
+
+    --text-primary:#1f2328;
+    --text-secondary:#4e5058;
+    --text-muted:#777;
+
+    --border:rgba(0,0,0,.08);
+}
+
+/* =====================================================
+   RESET
+===================================================== */
+
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Inter,sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
 }
 
 body{
 
-height:100vh;
+    font-family:'Inter',sans-serif;
 
-background:
-linear-gradient(
-135deg,
-#6a11cb,
-#2575fc
-);
+    background:var(--bg-primary);
 
-display:flex;
+    color:var(--text-primary);
+
+    overflow:hidden;
+
+    height:100vh;
 }
+
+/* =====================================================
+   SCROLLBAR
+===================================================== */
+
+::-webkit-scrollbar{
+    width:10px;
+}
+
+::-webkit-scrollbar-track{
+    background:transparent;
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:rgba(255,255,255,.15);
+
+    border-radius:20px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:rgba(255,255,255,.3);
+}
+
+/* =====================================================
+   APP LAYOUT
+===================================================== */
 
 .app{
 
-display:flex;
-width:100%;
+    display:flex;
+
+    height:100vh;
+
+    width:100%;
 }
 
-.sidebar{
+/* =====================================================
+   SERVER SIDEBAR
+===================================================== */
 
-width:280px;
+.server-sidebar{
 
-background:
-rgba(255,255,255,.1);
+    width:72px;
 
-backdrop-filter:blur(20px);
+    background:var(--bg-tertiary);
 
-padding:20px;
+    display:flex;
 
-color:white;
+    flex-direction:column;
+
+    align-items:center;
+
+    padding:12px 0;
+
+    gap:10px;
 }
 
-.logo{
+.server-logo{
 
-font-size:2rem;
+    width:48px;
+    height:48px;
 
-font-weight:bold;
+    border-radius:16px;
 
-margin-bottom:40px;
+    background:linear-gradient(
+        135deg,
+        #5865f2,
+        #8b5cf6
+    );
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:1.3rem;
+
+    cursor:pointer;
+
+    transition:var(--transition);
 }
+
+.server-logo:hover{
+
+    border-radius:12px;
+
+    transform:translateY(-2px);
+}
+
+.server-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+}
+
+.server{
+
+    width:48px;
+    height:48px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:var(--bg-secondary);
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:all .2s ease;
+
+    font-size:1.1rem;
+}
+
+.server:hover{
+
+    border-radius:16px;
+
+    background:var(--accent);
+
+    transform:scale(1.05);
+}
+
+.server.active{
+
+    background:var(--accent);
+
+    border-radius:16px;
+}
+
+/* =====================================================
+   CHANNEL SIDEBAR
+===================================================== */
+
+.channel-sidebar{
+
+    width:260px;
+
+    background:var(--bg-secondary);
+
+    display:flex;
+
+    flex-direction:column;
+
+    border-right:1px solid var(--border);
+}
+
+.server-header{
+
+    height:48px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 16px;
+
+    border-bottom:1px solid var(--border);
+
+    font-weight:700;
+
+    box-shadow:0 1px 0 rgba(0,0,0,.2);
+}
+
+.server-header button{
+
+    border:none;
+
+    background:none;
+
+    color:var(--text-secondary);
+
+    cursor:pointer;
+}
+
+.channel-category{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:18px 14px 8px;
+
+    color:var(--text-muted);
+
+    font-size:.75rem;
+
+    font-weight:700;
+}
+
+.channel-category button{
+
+    border:none;
+
+    background:none;
+
+    color:inherit;
+
+    cursor:pointer;
+}
+
+.channels{
+
+    padding:0 8px;
+}
+
+/* =====================================================
+   CHANNELS
+===================================================== */
+
+.channel,
+.voice-channel{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px 12px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    color:var(--text-secondary);
+
+    margin-bottom:2px;
+
+    transition:var(--transition);
+}
+
+.channel:hover,
+.voice-channel:hover{
+
+    background:var(--channel-hover);
+
+    color:var(--text-primary);
+}
+
+.channel.active{
+
+    background:var(--channel-active);
+
+    color:var(--text-primary);
+
+    font-weight:600;
+}
+
+/* =====================================================
+   PROFILE BAR
+===================================================== */
+
+.profile-bar{
+
+    margin-top:auto;
+
+    height:54px;
+
+    background:rgba(0,0,0,.15);
+
+    display:flex;
+
+    align-items:center;
+
+    padding:0 8px;
+
+    gap:10px;
+}
+
+.profile-bar img{
+
+    width:34px;
+    height:34px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+}
+
+.profile-info{
+
+    flex:1;
+}
+
+.profile-info h4{
+
+    font-size:.85rem;
+}
+
+.profile-info span{
+
+    font-size:.72rem;
+
+    color:var(--text-muted);
+}
+
+.profile-actions{
+
+    display:flex;
+
+    gap:4px;
+}
+
+.profile-actions button{
+
+    width:32px;
+    height:32px;
+
+    border:none;
+
+    border-radius:6px;
+
+    background:none;
+
+    color:var(--text-secondary);
+
+    cursor:pointer;
+
+    transition:var(--transition);
+}
+
+.profile-actions button:hover{
+
+    background:var(--channel-hover);
+
+    color:white;
+}
+
+/* =====================================================
+   CHAT AREA
+===================================================== */
+
+.chat-container{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    background:var(--bg-primary);
+}
+
+/* =====================================================
+   CHAT HEADER
+===================================================== */
+
+.chat-header{
+
+    height:48px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 18px;
+
+    border-bottom:1px solid var(--border);
+
+    box-shadow:0 1px 0 rgba(0,0,0,.2);
+}
+
+.chat-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.chat-title i{
+
+    color:var(--text-muted);
+}
+
+.chat-actions{
+
+    display:flex;
+
+    gap:8px;
+}
+
+.chat-actions button{
+
+    width:36px;
+    height:36px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:none;
+
+    color:var(--text-secondary);
+
+    cursor:pointer;
+
+    transition:var(--transition);
+}
+
+.chat-actions button:hover{
+
+    background:var(--channel-hover);
+
+    color:white;
+}
+
+/* =====================================================
+   MEMBERS SIDEBAR
+===================================================== */
+
+.members-sidebar{
+
+    width:240px;
+
+    background:var(--bg-secondary);
+
+    border-left:1px solid var(--border);
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+.members-header{
+
+    padding:20px 16px 12px;
+
+    font-size:.8rem;
+
+    font-weight:700;
+
+    color:var(--text-muted);
+}
+
+.member-list{
+
+    padding:0 8px;
+}
+
+.member{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:8px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+}
+
+.member:hover{
+
+    background:var(--channel-hover);
+}
+
+.member img{
+
+    width:32px;
+    height:32px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+}
+
+/* =====================================================
+   RESPONSIVE FOUNDATION
+===================================================== */
+
+@media(max-width:1200px){
+
+    .members-sidebar{
+        display:none;
+    }
+}
+
+@media(max-width:900px){
+
+    .channel-sidebar{
+        width:220px;
+    }
+}
+
+@media(max-width:768px){
+
+    .channel-sidebar{
+        display:none;
+    }
+}
+/* =====================================================
+   SNOWCHAT
+   Discord Inspired UI
+===================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root{
+
+    --bg-primary:#313338;
+    --bg-secondary:#2b2d31;
+    --bg-tertiary:#1e1f22;
+
+    --channel-hover:#35373c;
+    --channel-active:#404249;
+
+    --text-primary:#ffffff;
+    --text-secondary:#b5bac1;
+    --text-muted:#949ba4;
+
+    --accent:#5865f2;
+    --accent-hover:#4752c4;
+
+    --success:#23a55a;
+    --warning:#faa81a;
+    --danger:#f23f42;
+
+    --border:rgba(255,255,255,.08);
+
+    --shadow:
+    0 12px 30px rgba(0,0,0,.25);
+
+    --transition:.25s ease;
+}
+
+/* =====================================================
+   LIGHT MODE
+===================================================== */
+
+body.light{
+
+    --bg-primary:#ffffff;
+    --bg-secondary:#f2f3f5;
+    --bg-tertiary:#e3e5e8;
+
+    --channel-hover:#e7e8ec;
+    --channel-active:#d9dce0;
+
+    --text-primary:#1f2328;
+    --text-secondary:#4e5058;
+    --text-muted:#777;
+
+    --border:rgba(0,0,0,.08);
+}
+
+/* =====================================================
+   RESET
+===================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    font-family:'Inter',sans-serif;
+
+    background:var(--bg-primary);
+
+    color:var(--text-primary);
+
+    overflow:hidden;
+
+    height:100vh;
+}
+
+/* =====================================================
+   SCROLLBAR
+===================================================== */
+
+::-webkit-scrollbar{
+    width:10px;
+}
+
+::-webkit-scrollbar-track{
+    background:transparent;
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:rgba(255,255,255,.15);
+
+    border-radius:20px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:rgba(255,255,255,.3);
+}
+
+/* =====================================================
+   APP LAYOUT
+===================================================== */
+
+.app{
+
+    display:flex;
+
+    height:100vh;
+
+    width:100%;
+}
+
+/* =====================================================
+   SERVER SIDEBAR
+===================================================== */
+
+.server-sidebar{
+
+    width:72px;
+
+    background:var(--bg-tertiary);
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    padding:12px 0;
+
+    gap:10px;
+}
+
+.server-logo{
+
+    width:48px;
+    height:48px;
+
+    border-radius:16px;
+
+    background:linear-gradient(
+        135deg,
+        #5865f2,
+        #8b5cf6
+    );
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:1.3rem;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+}
+
+.server-logo:hover{
+
+    border-radius:12px;
+
+    transform:translateY(-2px);
+}
+
+.server-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+}
+
+.server{
+
+    width:48px;
+    height:48px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:var(--bg-secondary);
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:all .2s ease;
+
+    font-size:1.1rem;
+}
+
+.server:hover{
+
+    border-radius:16px;
+
+    background:var(--accent);
+
+    transform:scale(1.05);
+}
+
+.server.active{
+
+    background:var(--accent);
+
+    border-radius:16px;
+}
+
+/* =====================================================
+   CHANNEL SIDEBAR
+===================================================== */
+
+.channel-sidebar{
+
+    width:260px;
+
+    background:var(--bg-secondary);
+
+    display:flex;
+
+    flex-direction:column;
+
+    border-right:1px solid var(--border);
+}
+
+.server-header{
+
+    height:48px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 16px;
+
+    border-bottom:1px solid var(--border);
+
+    font-weight:700;
+
+    box-shadow:0 1px 0 rgba(0,0,0,.2);
+}
+
+.server-header button{
+
+    border:none;
+
+    background:none;
+
+    color:var(--text-secondary);
+
+    cursor:pointer;
+}
+
+.channel-category{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:18px 14px 8px;
+
+    color:var(--text-muted);
+
+    font-size:.75rem;
+
+    font-weight:700;
+}
+
+.channel-category button{
+
+    border:none;
+
+    background:none;
+
+    color:inherit;
+
+    cursor:pointer;
+}
+
+.channels{
+
+    padding:0 8px;
+}
+
+/* =====================================================
+   CHANNELS
+===================================================== */
+
+.channel,
+.voice-channel{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px 12px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    color:var(--text-secondary);
+
+    margin-bottom:2px;
+
+    transition:var(--transition);
+}
+
+.channel:hover,
+.voice-channel:hover{
+
+    background:var(--channel-hover);
+
+    color:var(--text-primary);
+}
+
+.channel.active{
+
+    background:var(--channel-active);
+
+    color:var(--text-primary);
+
+    font-weight:600;
+}
+
+/* =====================================================
+   PROFILE BAR
+===================================================== */
+
+.profile-bar{
+
+    margin-top:auto;
+
+    height:54px;
+
+    background:rgba(0,0,0,.15);
+
+    display:flex;
+
+    align-items:center;
+
+    padding:0 8px;
+
+    gap:10px;
+}
+
+.profile-bar img{
+
+    width:34px;
+    height:34px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+}
+
+.profile-info{
+
+    flex:1;
+}
+
+.profile-info h4{
+
+    font-size:.85rem;
+}
+
+.profile-info span{
+
+    font-size:.72rem;
+
+    color:var(--text-muted);
+}
+
+.profile-actions{
+
+    display:flex;
+
+    gap:4px;
+}
+
+.profile-actions button{
+
+    width:32px;
+    height:32px;
+
+    border:none;
+
+    border-radius:6px;
+
+    background:none;
+
+    color:var(--text-secondary);
+
+    cursor:pointer;
+
+    transition:var(--transition);
+}
+
+.profile-actions button:hover{
+
+    background:var(--channel-hover);
+
+    color:white;
+}
+
+/* =====================================================
+   CHAT AREA
+===================================================== */
+
+.chat-container{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    background:var(--bg-primary);
+}
+
+/* =====================================================
+   CHAT HEADER
+===================================================== */
+
+.chat-header{
+
+    height:48px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 18px;
+
+    border-bottom:1px solid var(--border);
+
+    box-shadow:0 1px 0 rgba(0,0,0,.2);
+}
+
+.chat-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.chat-title i{
+
+    color:var(--text-muted);
+}
+
+.chat-actions{
+
+    display:flex;
+
+    gap:8px;
+}
+
+.chat-actions button{
+
+    width:36px;
+    height:36px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:none;
+
+    color:var(--text-secondary);
+
+    cursor:pointer;
+
+    transition:var(--transition);
+}
+
+.chat-actions button:hover{
+
+    background:var(--channel-hover);
+
+    color:white;
+}
+
+/* =====================================================
+   MEMBERS SIDEBAR
+===================================================== */
+
+.members-sidebar{
+
+    width:240px;
+
+    background:var(--bg-secondary);
+
+    border-left:1px solid var(--border);
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+.members-header{
+
+    padding:20px 16px 12px;
+
+    font-size:.8rem;
+
+    font-weight:700;
+
+    color:var(--text-muted);
+}
+
+.member-list{
+
+    padding:0 8px;
+}
+
+.member{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:8px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    transition:var(--transition);
+}
+
+.member:hover{
+
+    background:var(--channel-hover);
+}
+
+.member img{
+
+    width:32px;
+    height:32px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+}
+
+/* =====================================================
+   RESPONSIVE FOUNDATION
+===================================================== */
+
+@media(max-width:1200px){
+
+    .members-sidebar{
+        display:none;
+    }
+}
+
+@media(max-width:900px){
+
+    .channel-sidebar{
+        width:220px;
+    }
+}
+
+@media(max-width:768px){
+
+    .channel-sidebar{
+        display:none;
+    }
+}
+/* =====================================================
+   SETTINGS + PROFILE + TOASTS
+===================================================== */
+
+/* =====================================================
+   SETTINGS MODAL
+===================================================== */
+
+.settings-modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+    rgba(0,0,0,.75);
+
+    backdrop-filter:blur(20px);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:9999;
+}
+
+.settings-modal.active{
+
+    display:flex;
+
+    animation:fadeIn .25s ease;
+}
+
+.settings-card{
+
+    width:900px;
+
+    max-width:95%;
+
+    height:650px;
+
+    background:var(--bg-secondary);
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 30px 80px rgba(0,0,0,.5);
+
+    display:flex;
+
+    flex-direction:column;
+
+    animation:modalPop .3s ease;
+}
+
+/* =====================================================
+   SETTINGS HEADER
+===================================================== */
+
+.settings-header{
+
+    height:70px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 25px;
+
+    border-bottom:1px solid var(--border);
+}
+
+.settings-header h2{
+
+    font-size:1.3rem;
+}
+
+.settings-header button{
+
+    width:40px;
+    height:40px;
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    background:none;
+
+    color:var(--text-secondary);
+
+    transition:.2s;
+}
+
+.settings-header button:hover{
+
+    background:var(--channel-hover);
+
+    color:white;
+}
+
+/* =====================================================
+   SETTINGS BODY
+===================================================== */
+
+.settings-body{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:30px;
+}
+
+.setting-group{
+
+    margin-bottom:25px;
+}
+
+.setting-group label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    font-size:.85rem;
+
+    font-weight:700;
+
+    color:var(--text-secondary);
+}
+
+.setting-group input,
+.setting-group textarea{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:var(--bg-primary);
+
+    color:var(--text-primary);
+
+    outline:none;
+
+    transition:.25s;
+}
+
+.setting-group input:focus,
+.setting-group textarea:focus{
+
+    box-shadow:
+    0 0 0 2px var(--accent);
+}
+
+/* =====================================================
+   AVATAR UPLOAD
+===================================================== */
+
+#avatarInput{
+
+    cursor:pointer;
+}
+
+.avatar-preview{
+
+    width:120px;
+    height:120px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    margin-bottom:20px;
+
+    border:4px solid var(--accent);
+
+    box-shadow:
+    0 10px 30px rgba(88,101,242,.4);
+}
+
+/* =====================================================
+   SAVE BUTTON
+===================================================== */
+
+#saveSettings{
+
+    width:100%;
+
+    padding:16px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:linear-gradient(
+        135deg,
+        #5865f2,
+        #8b5cf6
+    );
+
+    color:white;
+
+    font-size:1rem;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+#saveSettings:hover{
+
+    transform:
+    translateY(-3px);
+
+    box-shadow:
+    0 10px 25px rgba(88,101,242,.4);
+}
+
+/* =====================================================
+   PROFILE MODAL
+===================================================== */
+
+.profile-modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+    rgba(0,0,0,.75);
+
+    backdrop-filter:blur(20px);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:9998;
+}
+
+.profile-modal.active{
+
+    display:flex;
+}
+
+.profile-card{
+
+    width:420px;
+
+    background:var(--bg-secondary);
+
+    border-radius:24px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 25px 80px rgba(0,0,0,.45);
+
+    animation:modalPop .3s ease;
+}
+
+/* =====================================================
+   PROFILE BANNER
+===================================================== */
+
+.profile-banner{
+
+    height:140px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #5865f2,
+        #8b5cf6,
+        #ec4899
+    );
+}
+
+.profile-content{
+
+    padding:20px;
+}
+
+.profile-content img{
+
+    width:110px;
+    height:110px;
+
+    border-radius:50%;
+
+    border:6px solid var(--bg-secondary);
+
+    margin-top:-70px;
+
+    object-fit:cover;
+}
+
+.profile-content h2{
+
+    margin-top:10px;
+
+    font-size:1.4rem;
+}
+
+.profile-content p{
+
+    margin-top:8px;
+
+    color:var(--text-secondary);
+
+    line-height:1.5;
+}
+
+.profile-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:6px 12px;
+
+    border-radius:30px;
+
+    background:
+    rgba(88,101,242,.15);
+
+    color:#8ea1ff;
+
+    margin-top:15px;
+}
+
+/* =====================================================
+   USER CARDS
+===================================================== */
 
 .user-card{
 
-text-align:center;
+    background:
+    var(--bg-secondary);
+
+    border-radius:18px;
+
+    padding:20px;
+
+    transition:.25s;
+
+    cursor:pointer;
+}
+
+.user-card:hover{
+
+    transform:
+    translateY(-5px);
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.3);
 }
 
 .user-card img{
 
-width:70px;
-height:70px;
+    width:70px;
+    height:70px;
 
-border-radius:50%;
+    border-radius:50%;
 }
 
-.chat{
+.user-card h4{
 
-flex:1;
-
-display:flex;
-
-flex-direction:column;
-
-background:
-rgba(255,255,255,.05);
-
-backdrop-filter:blur(20px);
+    margin-top:10px;
 }
 
-.chat-header{
+.user-card p{
 
-padding:20px;
+    margin-top:6px;
 
-color:white;
-
-border-bottom:
-1px solid rgba(255,255,255,.1);
+    color:var(--text-secondary);
 }
 
-.messages{
+/* =====================================================
+   FRIEND LIST
+===================================================== */
 
-flex:1;
+.friend-list{
 
-padding:20px;
+    display:flex;
 
-overflow:auto;
+    flex-direction:column;
+
+    gap:10px;
 }
 
-.message{
+.friend{
 
-background:white;
+    display:flex;
 
-padding:12px;
+    align-items:center;
 
-border-radius:12px;
+    gap:12px;
 
-margin-bottom:10px;
+    padding:12px;
 
-max-width:300px;
+    border-radius:12px;
+
+    transition:.2s;
+
+    cursor:pointer;
 }
 
-.chat-input{
+.friend:hover{
 
-display:flex;
-
-padding:20px;
-
-gap:10px;
+    background:
+    var(--channel-hover);
 }
 
-.chat-input input{
+.friend img{
 
-flex:1;
+    width:42px;
+    height:42px;
 
-padding:15px;
-
-border:none;
-
-border-radius:12px;
+    border-radius:50%;
 }
 
-.chat-input button{
+.friend-info{
 
-width:60px;
+    flex:1;
+}
 
-border:none;
+.friend-info span{
 
-border-radius:12px;
+    color:var(--text-muted);
 
-cursor:pointer;
+    font-size:.85rem;
+}
+
+/* =====================================================
+   STATUS INDICATORS
+===================================================== */
+
+.status{
+
+    width:12px;
+    height:12px;
+
+    border-radius:50%;
+}
+
+.status.online{
+
+    background:#23a55a;
+}
+
+.status.idle{
+
+    background:#f0b232;
+}
+
+.status.dnd{
+
+    background:#f23f42;
+}
+
+.status.offline{
+
+    background:#80848e;
+}
+
+/* =====================================================
+   TOAST SYSTEM
+===================================================== */
+
+#toastContainer{
+
+    position:fixed;
+
+    top:20px;
+
+    right:20px;
+
+    z-index:10000;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+}
+
+.toast{
+
+    min-width:320px;
+
+    padding:15px 18px;
+
+    border-radius:14px;
+
+    background:var(--bg-secondary);
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.35);
+
+    animation:
+    toastIn .35s ease;
+}
+
+.toast.success{
+
+    border-left:
+    5px solid #23a55a;
+}
+
+.toast.error{
+
+    border-left:
+    5px solid #f23f42;
+}
+
+.toast.warning{
+
+    border-left:
+    5px solid #f0b232;
+}
+
+.toast i{
+
+    font-size:1.1rem;
+}
+
+/* =====================================================
+   ACHIEVEMENT BADGES
+===================================================== */
+
+.badges{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    margin-top:15px;
+}
+
+.badge{
+
+    padding:8px 12px;
+
+    border-radius:30px;
+
+    background:
+    rgba(255,255,255,.08);
+
+    font-size:.85rem;
+
+    transition:.2s;
+}
+
+.badge:hover{
+
+    transform:
+    scale(1.05);
+}
+
+/* =====================================================
+   SECURITY PANEL
+===================================================== */
+
+.security-panel{
+
+    background:
+    rgba(35,165,90,.12);
+
+    border:
+    1px solid rgba(35,165,90,.25);
+
+    padding:16px;
+
+    border-radius:16px;
+
+    margin-top:20px;
+}
+
+.security-panel h3{
+
+    color:#23a55a;
+
+    margin-bottom:10px;
+}
+
+/* =====================================================
+   GLASS EFFECTS
+===================================================== */
+
+.glass{
+
+    background:
+    rgba(255,255,255,.06);
+
+    backdrop-filter:
+    blur(20px);
+
+    border:
+    1px solid rgba(255,255,255,.08);
+}
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+    }
+
+    to{
+        opacity:1;
+    }
+}
+
+@keyframes modalPop{
+
+    from{
+
+        opacity:0;
+
+        transform:
+        scale(.9);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+        scale(1);
+    }
+}
+
+@keyframes toastIn{
+
+    from{
+
+        opacity:0;
+
+        transform:
+        translateX(100px);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+        translateX(0);
+    }
+}
+/* =====================================================
+   SETTINGS + PROFILE + TOASTS
+===================================================== */
+
+/* =====================================================
+   SETTINGS MODAL
+===================================================== */
+
+.settings-modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+    rgba(0,0,0,.75);
+
+    backdrop-filter:blur(20px);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:9999;
+}
+
+.settings-modal.active{
+
+    display:flex;
+
+    animation:fadeIn .25s ease;
+}
+
+.settings-card{
+
+    width:900px;
+
+    max-width:95%;
+
+    height:650px;
+
+    background:var(--bg-secondary);
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 30px 80px rgba(0,0,0,.5);
+
+    display:flex;
+
+    flex-direction:column;
+
+    animation:modalPop .3s ease;
+}
+
+/* =====================================================
+   SETTINGS HEADER
+===================================================== */
+
+.settings-header{
+
+    height:70px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 25px;
+
+    border-bottom:1px solid var(--border);
+}
+
+.settings-header h2{
+
+    font-size:1.3rem;
+}
+
+.settings-header button{
+
+    width:40px;
+    height:40px;
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    background:none;
+
+    color:var(--text-secondary);
+
+    transition:.2s;
+}
+
+.settings-header button:hover{
+
+    background:var(--channel-hover);
+
+    color:white;
+}
+
+/* =====================================================
+   SETTINGS BODY
+===================================================== */
+
+.settings-body{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:30px;
+}
+
+.setting-group{
+
+    margin-bottom:25px;
+}
+
+.setting-group label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    font-size:.85rem;
+
+    font-weight:700;
+
+    color:var(--text-secondary);
+}
+
+.setting-group input,
+.setting-group textarea{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:var(--bg-primary);
+
+    color:var(--text-primary);
+
+    outline:none;
+
+    transition:.25s;
+}
+
+.setting-group input:focus,
+.setting-group textarea:focus{
+
+    box-shadow:
+    0 0 0 2px var(--accent);
+}
+
+/* =====================================================
+   AVATAR UPLOAD
+===================================================== */
+
+#avatarInput{
+
+    cursor:pointer;
+}
+
+.avatar-preview{
+
+    width:120px;
+    height:120px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    margin-bottom:20px;
+
+    border:4px solid var(--accent);
+
+    box-shadow:
+    0 10px 30px rgba(88,101,242,.4);
+}
+
+/* =====================================================
+   SAVE BUTTON
+===================================================== */
+
+#saveSettings{
+
+    width:100%;
+
+    padding:16px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:linear-gradient(
+        135deg,
+        #5865f2,
+        #8b5cf6
+    );
+
+    color:white;
+
+    font-size:1rem;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+#saveSettings:hover{
+
+    transform:
+    translateY(-3px);
+
+    box-shadow:
+    0 10px 25px rgba(88,101,242,.4);
+}
+
+/* =====================================================
+   PROFILE MODAL
+===================================================== */
+
+.profile-modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+    rgba(0,0,0,.75);
+
+    backdrop-filter:blur(20px);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:9998;
+}
+
+.profile-modal.active{
+
+    display:flex;
+}
+
+.profile-card{
+
+    width:420px;
+
+    background:var(--bg-secondary);
+
+    border-radius:24px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 25px 80px rgba(0,0,0,.45);
+
+    animation:modalPop .3s ease;
+}
+
+/* =====================================================
+   PROFILE BANNER
+===================================================== */
+
+.profile-banner{
+
+    height:140px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #5865f2,
+        #8b5cf6,
+        #ec4899
+    );
+}
+
+.profile-content{
+
+    padding:20px;
+}
+
+.profile-content img{
+
+    width:110px;
+    height:110px;
+
+    border-radius:50%;
+
+    border:6px solid var(--bg-secondary);
+
+    margin-top:-70px;
+
+    object-fit:cover;
+}
+
+.profile-content h2{
+
+    margin-top:10px;
+
+    font-size:1.4rem;
+}
+
+.profile-content p{
+
+    margin-top:8px;
+
+    color:var(--text-secondary);
+
+    line-height:1.5;
+}
+
+.profile-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:6px 12px;
+
+    border-radius:30px;
+
+    background:
+    rgba(88,101,242,.15);
+
+    color:#8ea1ff;
+
+    margin-top:15px;
+}
+
+/* =====================================================
+   USER CARDS
+===================================================== */
+
+.user-card{
+
+    background:
+    var(--bg-secondary);
+
+    border-radius:18px;
+
+    padding:20px;
+
+    transition:.25s;
+
+    cursor:pointer;
+}
+
+.user-card:hover{
+
+    transform:
+    translateY(-5px);
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.3);
+}
+
+.user-card img{
+
+    width:70px;
+    height:70px;
+
+    border-radius:50%;
+}
+
+.user-card h4{
+
+    margin-top:10px;
+}
+
+.user-card p{
+
+    margin-top:6px;
+
+    color:var(--text-secondary);
+}
+
+/* =====================================================
+   FRIEND LIST
+===================================================== */
+
+.friend-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+}
+
+.friend{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    transition:.2s;
+
+    cursor:pointer;
+}
+
+.friend:hover{
+
+    background:
+    var(--channel-hover);
+}
+
+.friend img{
+
+    width:42px;
+    height:42px;
+
+    border-radius:50%;
+}
+
+.friend-info{
+
+    flex:1;
+}
+
+.friend-info span{
+
+    color:var(--text-muted);
+
+    font-size:.85rem;
+}
+
+/* =====================================================
+   STATUS INDICATORS
+===================================================== */
+
+.status{
+
+    width:12px;
+    height:12px;
+
+    border-radius:50%;
+}
+
+.status.online{
+
+    background:#23a55a;
+}
+
+.status.idle{
+
+    background:#f0b232;
+}
+
+.status.dnd{
+
+    background:#f23f42;
+}
+
+.status.offline{
+
+    background:#80848e;
+}
+
+/* =====================================================
+   TOAST SYSTEM
+===================================================== */
+
+#toastContainer{
+
+    position:fixed;
+
+    top:20px;
+
+    right:20px;
+
+    z-index:10000;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+}
+
+.toast{
+
+    min-width:320px;
+
+    padding:15px 18px;
+
+    border-radius:14px;
+
+    background:var(--bg-secondary);
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.35);
+
+    animation:
+    toastIn .35s ease;
+}
+
+.toast.success{
+
+    border-left:
+    5px solid #23a55a;
+}
+
+.toast.error{
+
+    border-left:
+    5px solid #f23f42;
+}
+
+.toast.warning{
+
+    border-left:
+    5px solid #f0b232;
+}
+
+.toast i{
+
+    font-size:1.1rem;
+}
+
+/* =====================================================
+   ACHIEVEMENT BADGES
+===================================================== */
+
+.badges{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    margin-top:15px;
+}
+
+.badge{
+
+    padding:8px 12px;
+
+    border-radius:30px;
+
+    background:
+    rgba(255,255,255,.08);
+
+    font-size:.85rem;
+
+    transition:.2s;
+}
+
+.badge:hover{
+
+    transform:
+    scale(1.05);
+}
+
+/* =====================================================
+   SECURITY PANEL
+===================================================== */
+
+.security-panel{
+
+    background:
+    rgba(35,165,90,.12);
+
+    border:
+    1px solid rgba(35,165,90,.25);
+
+    padding:16px;
+
+    border-radius:16px;
+
+    margin-top:20px;
+}
+
+.security-panel h3{
+
+    color:#23a55a;
+
+    margin-bottom:10px;
+}
+
+/* =====================================================
+   GLASS EFFECTS
+===================================================== */
+
+.glass{
+
+    background:
+    rgba(255,255,255,.06);
+
+    backdrop-filter:
+    blur(20px);
+
+    border:
+    1px solid rgba(255,255,255,.08);
+}
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+    }
+
+    to{
+        opacity:1;
+    }
+}
+
+@keyframes modalPop{
+
+    from{
+
+        opacity:0;
+
+        transform:
+        scale(.9);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+        scale(1);
+    }
+}
+
+@keyframes toastIn{
+
+    from{
+
+        opacity:0;
+
+        transform:
+        translateX(100px);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+        translateX(0);
+    }
 }
