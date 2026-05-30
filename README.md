@@ -1,587 +1,520 @@
-# ❄️ SnowChat Rebuild Project
+# ❄️ SnowChat
 
-## The Next-Generation Community Platform
+> The next-generation open-source communication platform.
 
-### Overview
+SnowChat is a modern, community-focused chat platform inspired by Discord, built from the ground up using React, TypeScript, Node.js, Prisma, PostgreSQL, and Socket.IO.
 
-SnowChat is a modern communication platform inspired by Discord but redesigned with a stronger focus on customization, community progression, performance, and developer extensibility.
+The goal of SnowChat is to provide a fast, scalable, and highly customizable communication experience for communities, friend groups, gaming teams, development teams, and organizations.
 
-The goal is not to clone Discord feature-for-feature, but to build a platform that supports:
+Unlike traditional chat platforms, SnowChat is being designed as an open-source ecosystem where developers can contribute, extend functionality, build integrations, and help shape the future of the platform.
 
-* Real-time messaging
-* Community servers
-* Direct messages
-* Voice and video communication
-* Rich profiles
-* Moderation systems
-* Developer APIs
-* Plugin ecosystem
-* Community progression
+### ✨ Planned Features
+
+- 💬 Real-time messaging
+- 🏠 Servers & channels
+- 👥 Friends & direct messages
+- 🔒 Secure authentication
+- 🎭 Roles & permissions
+- 📨 Invite system
+- 😊 Reactions & emojis
+- 📁 File sharing
+- 🎤 Voice channels
+- 📹 Video calls
+- 🖥️ Screen sharing
+- 🔔 Smart notifications
+- 🔎 Powerful search
+- 🤖 Bot & plugin platform
+- 📱 Mobile support
+- 🌐 Public developer API
+
+### 🚧 Development Status
+
+SnowChat is currently in active development.
+
+Many systems are already being built, including authentication, server management, channels, messaging, Socket.IO integration, and database architecture. However, the project is not yet feature-complete and should be considered an experimental work in progress.
+
+The long-term vision is to create a modern, open-source alternative to proprietary communication platforms while maintaining excellent performance, security, and user experience.
 
 ---
 
-# Core Philosophy
+⚠️ **Important:** SnowChat is currently not production-ready. Features, APIs, database structures, and UI components may change significantly during development.
 
-SnowChat is built around five principles:
+# ❄️ SnowChat
 
-1. Fast
-2. Customizable
-3. Secure
-4. Community-driven
-5. Developer-friendly
+> A modern, open-source communication platform inspired by Discord, built with React, TypeScript, Node.js, Prisma, PostgreSQL, and Socket.IO.
+
+SnowChat aims to provide everything you expect from a modern chat platform:
+
+* 💬 Real-time messaging
+* 🏠 Servers & channels
+* 👥 Friends & direct messages
+* 🔒 Secure authentication
+* 🎤 Voice & video channels
+* 📁 File sharing
+* 🎭 Roles & permissions
+* ⚡ Modern, fast, scalable architecture
 
 ---
 
-# Platform Architecture
+# 🚧 Project Status
+
+> **SnowChat is currently under active development and is NOT feature-complete.**
+
+Many core systems are already planned or partially implemented, but SnowChat is **not ready for production use**.
+
+Current state:
 
 ```text
-Frontend
-├── Web App
-├── Mobile App
-└── Desktop App
+✅ Authentication foundation
+✅ Server creation foundation
+✅ Channel system foundation
+✅ Messaging foundation
+✅ React frontend setup
+✅ Express backend setup
+✅ Prisma integration
+✅ Socket.IO integration
 
-Backend
-├── API Gateway
-├── Authentication Service
-├── Chat Service
-├── Voice Service
-├── Media Service
-└── Notification Service
+🚧 User profiles
+🚧 Direct messages
+🚧 Friends system
+🚧 Roles & permissions
+🚧 Voice channels
+🚧 Video calls
+🚧 Notifications
+🚧 File uploads
+🚧 Search
+🚧 Mobile support
 
-Database
-├── PostgreSQL
-├── Redis
-└── Object Storage
+❌ Not production ready yet
 ```
 
 ---
 
-# Recommended Technology Stack
+# 📸 Screenshots
+
+Create a folder:
+
+```text
+assets/screenshots/
+```
+
+Example:
+
+```text
+assets/
+└── screenshots/
+    ├── login.png
+    ├── register.png
+    ├── dashboard.png
+```
+
+Then display them:
+
+```md
+## Login
+
+![Login](assets/screenshots/login.png)
+
+## Register
+
+![Register](assets/screenshots/register.png)
+
+## Chat
+
+![Chat](assets/screenshots/dashboard.png)
+```
+
+---
+
+# 🏗️ Tech Stack
 
 ## Frontend
 
-```text
-React
-TypeScript
-Vite
-TailwindCSS
-Socket.IO Client
-```
+* React
+* TypeScript
+* Vite
+* Zustand
+* Axios
+* Socket.IO Client
+* React Router
 
 ## Backend
 
+* Node.js
+* Express
+* TypeScript
+* Prisma ORM
+* PostgreSQL
+* Socket.IO
+
+## Tooling
+
+* Git
+* GitHub
+* npm
+* Docker (planned)
+
+---
+
+# 📂 Repository Structure
+
 ```text
-Node.js
-Express
-TypeScript
-Socket.IO
-```
-
-## Database
-
-```text
-PostgreSQL
-Redis
-Prisma ORM
-```
-
-## File Storage
-
-```text
-Cloudflare R2
-AWS S3
+SnowChat/
+│
+├── apps/
+│   │
+│   ├── api/
+│   │   ├── prisma/
+│   │   ├── src/
+│   │   └── package.json
+│   │
+│   └── web/
+│       ├── src/
+│       └── package.json
+│
+├── packages/
+│
+├── docs/
+│
+└── README.md
 ```
 
 ---
 
-# User System
+# ⚙️ Prerequisites
 
-## User Features
+Install:
 
-* Registration
-* Login
-* Password Reset
-* Two-Factor Authentication
-* Avatar Upload
-* Profile Banner
-* Custom Status
-* Bio
-* Presence System
+### Node.js
 
-## User Schema
+Download:
 
-```ts
-User {
-  id: string
-  username: string
-  email: string
-  passwordHash: string
-  avatar: string
-  banner: string
-  bio: string
-  status: string
-  createdAt: Date
-}
+[Node.js](https://nodejs.org?utm_source=chatgpt.com)
+
+Recommended:
+
+```text
+Node.js 20+
 ```
 
 ---
 
-# Authentication
+### PostgreSQL
 
-## Registration Flow
+Download:
 
-```text
-User Registers
- ↓
-Validate Input
- ↓
-Hash Password
- ↓
-Create Account
- ↓
-Send Verification Email
-```
+[PostgreSQL](https://www.postgresql.org/download/?utm_source=chatgpt.com)
 
-## Login Flow
+Recommended:
 
 ```text
-Login
- ↓
-Verify Password
- ↓
-Generate JWT
- ↓
-Create Session
- ↓
-Connect To Gateway
+PostgreSQL 15+
 ```
 
 ---
 
-# Community Servers
+### Git
 
-SnowChat replaces the term "Guild" or "Server" with:
+Download:
 
-```text
-FrostHub
-```
+[Git](https://git-scm.com/downloads?utm_source=chatgpt.com)
 
-Each FrostHub contains:
+---
 
-* Members
-* Channels
-* Roles
-* Permissions
-* Events
-* Voice Rooms
+# 🚀 Installation
 
-## FrostHub Schema
+Clone the repository:
 
-```ts
-FrostHub {
-  id: string
-  name: string
-  icon: string
-  ownerId: string
-  inviteCode: string
-  memberCount: number
-}
+```bash
+git clone https://github.com/YOUR_USERNAME/SnowChat.git
+
+cd SnowChat
 ```
 
 ---
 
-# Invite Code System
+## Install Backend Dependencies
 
-Every FrostHub receives a unique code.
+```bash
+cd apps/api
+
+npm install
+```
+
+---
+
+## Install Frontend Dependencies
+
+```bash
+cd ../web
+
+npm install
+```
+
+---
+
+# 🗄️ Database Setup
+
+Create PostgreSQL database:
+
+```sql
+CREATE DATABASE snowchat;
+```
+
+---
+
+## Configure Environment Variables
+
+Create:
+
+```text
+apps/api/.env
+```
 
 Example:
 
-```text
-SNOW-8A7F2D
-```
+```env
+PORT=3001
 
-Generation:
+JWT_SECRET=change-this-secret
 
-```ts
-function generateInviteCode() {
-  return (
-    "SNOW-" +
-    Math.random()
-      .toString(36)
-      .substring(2,8)
-      .toUpperCase()
-  );
-}
+DATABASE_URL="postgresql://postgres:password@localhost:5432/snowchat"
+
+CLIENT_URL=http://localhost:5173
 ```
 
 ---
 
-# Milestone Invite Upgrades
+# Prisma Setup
 
-At member milestones:
+Generate Prisma client:
 
-```text
-25 Members
-100 Members
-500 Members
-1000 Members
-```
+```bash
+cd apps/api
 
-The FrostHub unlocks:
-
-* Custom Invite URLs
-* Vanity Codes
-* Animated Banners
-* Advanced Analytics
-
-Example:
-
-```text
-snowchat.gg/gaming
-```
-
-instead of:
-
-```text
-snowchat.gg/SNOW-8A7F2D
+npx prisma generate
 ```
 
 ---
 
-# Channels
+Run migrations:
 
-## Channel Types
-
-### Text Channel
-
-```text
-#general
-#gaming
-#announcements
-```
-
-### Voice Room
-
-```text
-🎤 General VC
-🎤 Gaming VC
-```
-
-### Stage Room
-
-```text
-📢 Community Talks
-```
-
-### Forum Channel
-
-```text
-📚 Support Forum
+```bash
+npx prisma migrate dev --name init
 ```
 
 ---
 
-# Direct Messages
+Open Prisma Studio:
 
-SnowChat renames DMs to:
+```bash
+npx prisma studio
+```
+
+---
+
+# ▶️ Running SnowChat
+
+## Start Backend
+
+```bash
+cd apps/api
+
+npm run dev
+```
+
+Expected:
 
 ```text
-SnowLines
-```
-
-Features:
-
-* One-to-one messaging
-* Group messaging
-* Voice calls
-* Video calls
-* File sharing
-
----
-
-# Messaging System
-
-## Features
-
-* Reactions
-* Replies
-* Threads
-* Mentions
-* Message Editing
-* Message Deletion
-* Attachments
-* Embeds
-
-## Message Schema
-
-```ts
-Message {
-  id: string
-  authorId: string
-  channelId: string
-  content: string
-  edited: boolean
-  createdAt: Date
-}
+❄️ SnowChat API running on 3001
 ```
 
 ---
 
-# Real-Time Communication
+## Start Frontend
 
-Socket.IO Rooms
+```bash
+cd apps/web
 
-```ts
-socket.join(channelId);
-
-io.to(channelId).emit(
-  "message",
-  message
-);
+npm run dev
 ```
 
-This ensures only users inside a channel receive channel messages.
-
----
-
-# Roles & Permissions
-
-## Default Roles
+Expected:
 
 ```text
-Founder
-Administrator
-Moderator
-Member
-Visitor
-```
-
-Permissions:
-
-```text
-Manage FrostHub
-Manage Channels
-Manage Roles
-Kick Members
-Ban Members
-Manage Messages
+Local: http://localhost:5173
 ```
 
 ---
 
-# Moderation System
+# 🔌 OAuth Setup (GitHub Login)
 
-## Features
+SnowChat plans to support OAuth providers.
 
-* Timeouts
-* Kicks
-* Bans
-* Slowmode
-* Word Filters
-* Anti-Spam
-* Audit Logs
+## GitHub OAuth
 
-Audit Log Schema:
+Create an OAuth App:
 
-```ts
-AuditLog {
-  id: string
-  action: string
-  moderatorId: string
-  targetId: string
-  timestamp: Date
-}
+[GitHub Developer Settings](https://github.com/settings/developers?utm_source=chatgpt.com)
+
+### Homepage URL
+
+```text
+http://localhost:5173
+```
+
+### Callback URL
+
+```text
+http://localhost:3001/auth/github/callback
 ```
 
 ---
 
-# Friends System
+Save:
 
-SnowChat renames Friends to:
-
-```text
-Connections
+```env
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
 ```
-
-Features:
-
-* Send Request
-* Accept Request
-* Block User
-* Remove Connection
 
 ---
 
-# Presence System
+## Google OAuth
 
-Statuses:
+Create credentials:
+
+[Google Cloud Console](https://console.cloud.google.com?utm_source=chatgpt.com)
+
+Callback:
 
 ```text
-Online
-Idle
-Do Not Disturb
-Invisible
-Offline
+http://localhost:3001/auth/google/callback
 ```
-
-Custom statuses supported.
 
 ---
 
-# Notifications
+## Discord OAuth
 
-Types:
+Create application:
+
+[Discord Developer Portal](https://discord.com/developers/applications?utm_source=chatgpt.com)
+
+Callback:
 
 ```text
-Mentions
-Replies
-Friend Requests
-Invites
+http://localhost:3001/auth/discord/callback
+```
+
+---
+
+# 🗺️ Roadmap
+
+## Phase 1
+
+```text
+Authentication
+Servers
+Channels
+Messaging
+```
+
+## Phase 2
+
+```text
+Profiles
+Settings
+Friends
 Direct Messages
 ```
 
----
-
-# Voice & Video
-
-Recommended Technology:
+## Phase 3
 
 ```text
-WebRTC
-LiveKit
-mediasoup
+Roles
+Permissions
+Moderation
+Invites
 ```
 
-Features:
-
-* Voice Rooms
-* Video Calls
-* Screen Sharing
-* Push-To-Talk
-* Noise Suppression
-
----
-
-# Settings System
-
-## User Settings
-
-* Profile
-* Privacy
-* Notifications
-* Appearance
-* Accessibility
-* Keybinds
-
-## FrostHub Settings
-
-* Overview
-* Members
-* Roles
-* Invites
-* Channels
-* Integrations
-* Audit Logs
-
----
-
-# Community Progression
-
-Unique SnowChat feature.
-
-Each FrostHub earns XP based on:
-
-* Messages
-* Active Members
-* Events
-* Voice Activity
-
-Unlocks:
+## Phase 4
 
 ```text
-Level 1 - Custom Emoji
-Level 5 - Animated Banner
-Level 10 - Vanity URL
-Level 20 - Partner Status
+Voice Channels
+Video Calls
+Screen Sharing
 ```
 
----
-
-# Developer Platform
-
-Public API
-
-```http
-POST /api/auth/register
-POST /api/auth/login
-
-POST /api/frosthubs
-GET /api/frosthubs/:id
-
-POST /api/channels
-GET /api/channels/:id
-
-POST /api/messages
-GET /api/messages/:channelId
-```
-
----
-
-# Plugin System
-
-Future support:
+## Phase 5
 
 ```text
-Moderation Plugins
-Music Plugins
-Analytics Plugins
-Community Plugins
+Bots
+Plugins
+Developer API
 ```
 
-Developers can create custom extensions using the SnowChat SDK.
+---
+
+# 🤝 Contributing
+
+Contributions are welcome.
+
+1. Fork the repository
+2. Create a feature branch
+
+```bash
+git checkout -b feature/amazing-feature
+```
+
+3. Commit changes
+
+```bash
+git commit -m "Add amazing feature"
+```
+
+4. Push
+
+```bash
+git push origin feature/amazing-feature
+```
+
+5. Open a Pull Request
 
 ---
 
-# Development Roadmap
+# 🐛 Reporting Issues
 
-Phase 1
+Please use GitHub Issues for:
 
-* Authentication
-* Profiles
-* Real-Time Messaging
-
-Phase 2
-
-* FrostHubs
-* Channels
-* Invite Codes
-
-Phase 3
-
-* SnowLines (DMs)
-* Connections
-* Notifications
-
-Phase 4
-
-* Roles
-* Permissions
-* Moderation
-
-Phase 5
-
-* Voice Rooms
-* Video Calls
-* Screen Sharing
-
-Phase 6
-
-* Mobile Apps
-* Plugin System
-* Public API
+* Bugs
+* Security concerns
+* Feature requests
+* Suggestions
 
 ---
 
-# Long-Term Vision
+# 📜 License
 
-SnowChat aims to become a modern, scalable communication platform focused on communities, creators, developers, and gamers while maintaining a clean and extensible architecture.
+Choose a license and add it to the repository.
+
+Recommended:
+
+```text
+MIT License
+```
+
+Generate one at:
+
+[Choose a License](https://choosealicense.com?utm_source=chatgpt.com)
+
+---
+
+# ❄️ SnowChat Vision
+
+SnowChat's goal is to become a modern, community-driven communication platform that combines the best parts of Discord with an open, extensible architecture.
+
+This repository represents an ongoing learning and development project. Features will continue to evolve, APIs may change, and breaking changes may occur until a stable release is reached.
+
+---
+
+**Built with ❤️ by the SnowChat community.**
