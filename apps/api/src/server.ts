@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import http from "http";
+import serverRoutes
 
 import { Server } from "socket.io";
 
@@ -87,4 +88,11 @@ server.listen(
     );
 
   }
+);
+
+from "./routes/server.routes";
+
+app.use(
+  "/api/servers",
+  serverRoutes
 );
